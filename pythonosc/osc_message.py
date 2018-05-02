@@ -2,7 +2,7 @@
 
 import logging
 
-from pythonosc.parsing import osc_types
+from .parsing import osc_types
 
 
 class ParseError(Exception):

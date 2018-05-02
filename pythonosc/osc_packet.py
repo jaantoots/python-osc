@@ -7,9 +7,9 @@ import calendar
 import collections
 import time
 
-from pythonosc.parsing import osc_types
-from pythonosc import osc_bundle
-from pythonosc import osc_message
+from .parsing import osc_types
+from . import osc_bundle
+from . import osc_message
 
 
 # A namedtuple as returned my the _timed_msg_of_bundle function.

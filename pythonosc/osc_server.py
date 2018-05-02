@@ -35,9 +35,9 @@ import os
 import socketserver
 import time
 
-from pythonosc import osc_bundle
-from pythonosc import osc_message
-from pythonosc import osc_packet
+from . import osc_bundle
+from . import osc_message
+from . import osc_packet
 
 
 def _call_handlers_for_packet(data, dispatcher):

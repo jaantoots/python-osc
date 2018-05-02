@@ -3,7 +3,7 @@
 import decimal
 import struct
 
-from pythonosc.parsing import ntp
+from . import ntp
 
 
 class ParseError(Exception):
