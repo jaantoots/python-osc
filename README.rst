@@ -1,3 +1,7 @@
+Modified for dealing with x-io Technologies NGIMU usage of OSC.
+
+----
+
 ==========
 python-osc
 ==========
