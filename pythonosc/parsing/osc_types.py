@@ -112,9 +112,31 @@ def get_int(dgram, start_index):
     if len(dgram[start_index:]) < _INT_DGRAM_LEN:
       raise ParseError('Datagram is too short')
     return (
-        struct.unpack('>i',
-                      dgram[start_index:start_index + _INT_DGRAM_LEN])[0],
-        start_index + _INT_DGRAM_LEN)
+      struct.unpack('>i', dgram[start_index:start_index + _INT_DGRAM_LEN])[0],
+      start_index + _INT_DGRAM_LEN)
+  except (struct.error, TypeError) as e:
+    raise ParseError('Could not parse datagram %s' % e)
+
+
+def get_uint(dgram, start_index):
+  """Get a 32-bit big-endian unsigned integer from the datagram.
+
+  Args:
+    dgram: A datagram packet.
+    start_index: An index where the integer starts in the datagram.
+
+  Returns:
+    A tuple containing the integer and the new end index.
+
+  Raises:
+    ParseError if the datagram could not be parsed.
+  """
+  try:
+    if len(dgram[start_index:]) < _INT_DGRAM_LEN:
+      raise ParseError('Datagram is too short')
+    return (
+      struct.unpack('>I', dgram[start_index:start_index + _INT_DGRAM_LEN])[0],
+      start_index + _INT_DGRAM_LEN)
   except (struct.error, TypeError) as e:
     raise ParseError('Could not parse datagram %s' % e)
 
@@ -224,8 +246,8 @@ def get_date(dgram, start_index):
     return IMMEDIATELY, start_index + _DATE_DGRAM_LEN
   if len(dgram[start_index:]) < _DATE_DGRAM_LEN:
     raise ParseError('Datagram is too short')
-  num_secs, start_index = get_int(dgram, start_index)
-  fraction, start_index = get_int(dgram, start_index)
+  num_secs, start_index = get_uint(dgram, start_index)
+  fraction, start_index = get_uint(dgram, start_index)
   # Sum seconds and fraction of second:
   system_time = num_secs + (fraction / ntp.FRACTIONAL_CONVERSION)
   return ntp.ntp_to_system_time(system_time), start_index
@@ -234,7 +256,6 @@ def get_date(dgram, start_index):
 def write_date(system_time):
   if system_time == IMMEDIATELY:
     return ntp.IMMEDIATELY
-
   try:
     return ntp.system_time_to_ntp(system_time)
   except ntp.NtpError as ntpe:
